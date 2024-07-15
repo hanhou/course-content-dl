@@ -2,7 +2,7 @@
 
 ## Biological Image Analysis
 
-Count cells: use the [segmentation notebook](https://deeplearning.neuromatch.io/projects/code/segmentation_denoising.html) and/or other approaches.
+Count cells: use the [segmentation notebook](https://colab.research.google.com/github/NeuromatchAcademy/course-content-dl/blob/main/projects/Neuroscience/cellular_segmentation.ipynb) and/or other approaches.
 
 Denoise with [noise2void](https://github.com/juglab/n2v).
 
@@ -12,7 +12,7 @@ Try [self-supervised cell segmentation](https://www.biorxiv.org/content/10.1101/
 
 ## Using image features to predict human behavior
 
-[THINGS](https://things-initiative.org): [images](https://things-initiative.org/projects/things-images/), [behavioral data](https://osf.io/jum2f/), [paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0223792).
+[THINGS](https://twitter.com/martin_hebart/status/1396811812180578305): [images/behavioral data](https://osf.io/jum2f/), [paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0223792).
 
 ## Deep leakage from gradients
 
@@ -35,7 +35,7 @@ Use the GNN deepwalk embedding on some molecules dataset and use CNN to cluster 
 
 # Datasets
 
-[THINGS](https://things-initiative.org/projects/things-images/)
+[THINGS](https://osf.io/jum2f/)
 
 [OpenNeuro](https://openneuro.org/public/datasets)
 

@@ -3,9 +3,6 @@ name: publish-book
 on: 
 
   workflow_dispatch:
-  
-  push:
-    branches: main
 
 env:
   NB_KERNEL: python
@@ -17,8 +14,24 @@ jobs:
   build-and-deploy-book:
     runs-on: ubuntu-latest
     steps:
+      - name: Free up disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+          
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+        
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -27,36 +40,65 @@ jobs:
         run: |
           readonly local msg=$(git log -1 --pretty=format:"%s")
           echo "COMMIT_MESSAGE=$msg" >> $GITHUB_ENV
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.9
+
       - name: Install CI tools
         run: |
           BRANCH=`python -c 'import os, re; m = re.search(r"nmaci:([\w-]+)", os.environ["COMMIT_MESSAGE"]); print("main" if m is None else m.group(1))'`
           wget https://github.com/NeuromatchAcademy/nmaci/archive/refs/heads/$BRANCH.tar.gz
           tar -xzf $BRANCH.tar.gz
+          pip install --upgrade pip
           pip install -r nmaci-$BRANCH/requirements.txt
           mv nmaci-$BRANCH/scripts/ ci/
           rm -r nmaci-$BRANCH
+          rm -r $BRANCH.tar.gz
           echo ci/ >> .gitignore
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install jupyter-book==0.10.2 ghp-import
+          pip install jupyter-book==0.14.0 ghp-import
+          pip install jupyter_client==7.3.5  # downgrade jupyter-client to fix hangs
+
+      - name: Install XKCD fonts
+        if: "!contains(env.COMMIT_MESSAGE, 'skip ci')"
+        run: |
+          sudo apt-get update -yq
+          wget http://archive.ubuntu.com/ubuntu/pool/universe/f/fonts-humor-sans/fonts-humor-sans_1.0-4_all.deb
+          sudo dpkg -i --force-all fonts-humor-sans_1.0-4_all.deb <<< 'yes'
+          sudo apt install -fy
+          rm -f $HOME/.matplotlib/fontList.cache
+
+      - name: Copy prereqs file
+        run: |
+          BRANCH=`python -c 'import os, re; m = re.search(r"course-content-dl:([\w-]+)", os.environ["COMMIT_MESSAGE"]); print("main" if m is None else m.group(1))'`
+          wget https://github.com/NeuromatchAcademy/precourse/archive/refs/heads/$BRANCH.tar.gz
+          tar -xzf $BRANCH.tar.gz
+          mv precourse-$BRANCH/prereqs/ prereqs/
+          rm -r precourse-$BRANCH
+          rm -r $BRANCH.tar.gz
+
       - name: Build the book
         run: |
-          python ci/generate_book_dl.py
+          python ci/generate_book_dl.py student
+          jupyter-book toc migrate /home/runner/work/course-content-dl/course-content-dl/book/_toc.yml -o /home/runner/work/course-content-dl/course-content-dl/book/_toc.yml
           ln -s ../tutorials book/tutorials
           ln -s ../projects book/projects
+          ln -s ../prereqs book/prereqs
           jupyter-book build book
-          python ci/parse_html_for_errors.py
+          python ci/parse_html_for_errors.py student
+
       - name: Commit book
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           ghp-import -n -c "deeplearning.neuromatch.io" -m "Update course book" book/_build/html
           git checkout -f gh-pages
+  
       - name: Publish to gh-pages
         uses: ad-m/github-push-action@v0.6.0
         with:

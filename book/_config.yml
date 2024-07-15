@@ -7,22 +7,22 @@
 # Book settings
 title                       : "Neuromatch Academy: Deep Learning"  # The title of the book. Will be placed in the left navbar.
 author                      : Neuromatch  # The author of the book
-copyright                   : "2021"  # Copyright year to be placed in the footer
-logo                        : nma-dl-logo-square-4xp.jpeg  # A path to the book logo
+copyright                   : ""  # Copyright year to be placed in the footer
+logo                        : nma-dl-logo-square-4xp.png  # A path to the book logo
 only_build_toc_files        : true
 
 
 #######################################################################################
 # Execution settings
 execute:
-  execute_notebooks         : force # Whether to execute notebooks at build time. Must be one of ("auto", "force", "cache", "off")
-  cache                     : ""    # A path to the jupyter cache that will be used to store execution artifacts. Defaults to `_build/.jupyter_cache/`
-  exclude_patterns          : [projects/ComputerVision/*.ipynb, projects/ReinforcementLearning/*.ipynb, projects/Neuroscience/*.ipynb, projects/NaturalLanguageProcessing/*.ipynb] # [projects/ComputerVision/Image_Alignment.ipynb, projects/ComputerVision/Learning_from_Images.ipynb, projects/ComputerVision/data_augmentation.ipynb, projects/ComputerVision/finetuning_on_fMRI_data.ipynb, projects/ComputerVision/transfer_learning.ipynb, projects/ComputerVision/vision_with_lost_glasses.ipynb, projects/ReinforcementLearning/RLymipcs.ipynb, projects/Neuroscience/NeuroSeqToSeq.ipynb, projects/Neuroscience/PoseEstimation.ipynb, projects/Neuroscience/algonauts_videos.ipynb, projects/Neuroscience/finetuning_on_fMRI_data.ipynb, projects/Neuroscience/segmentation_denoising.ipynb, projects/Neurosciencevision_with_lost_glasses.ipynb]    # A list of patterns to *skip* in execution (e.g. a notebook that takes a really long time)
-  timeout                   : 30    # The maximum time (in seconds) each notebook cell is allowed to run.
+  execute_notebooks         : force  # Whether to execute notebooks at build time. Must be one of ("auto", "force", "cache", "off")
+  cache                     : ""  # A path to the jupyter cache that will be used to store execution artifacts. Defaults to `_build/.jupyter_cache/`
+  exclude_patterns          : [projects/ComputerVision/*.ipynb, projects/ReinforcementLearning/*.ipynb, projects/Neuroscience/*.ipynb, projects/NaturalLanguageProcessing/*.ipynb]
+  timeout                   : 720  # The maximum time (in seconds) each notebook cell is allowed to run.
   run_in_temp               : false # If `True`, then a temporary directory will be created and used as the command working directory (cwd),
                                     # otherwise the notebook's parent directory will be the cwd.
   allow_errors              : true # If `False`, when a code cell raises an error the execution is stopped, otherwise all cells are always run.
-  stderr_output             : show  # One of 'show', 'remove', 'remove-warn', 'warn', 'error', 'severe'
+  stderr_output             : remove  # One of 'show', 'remove', 'remove-warn', 'warn', 'error', 'severe'
 
 # Parse and render settings
 parse:
@@ -30,11 +30,13 @@ parse:
     - amsmath
     - dollarmath
     - html_image
-
+sphinx:
+  config:
+    html_show_copyright: false
 #######################################################################################
 # HTML-specific settings
 html:
-  favicon                   : nma-dl-logo-square-4xp.jpeg  # A path to a favicon image
+  favicon                   : nma-dl-logo-square-4xp.png  # A path to a favicon image
   use_edit_page_button      : false  # Whether to add an "edit this page" button to pages. If `true`, repository information in repository: must be filled in
   use_repository_button     : true  # Whether to add a link to your repository button
   use_issues_button         : true  # Whether to add an "open an issue" button
@@ -46,7 +48,13 @@ html:
   comments:
     hypothesis              : false
     utterances              : false
-
+  extra_footer : |
+    <div>
+    <a href="http://creativecommons.org/licenses/by/4.0/"><img src="https://i.creativecommons.org/l/by/4.0/88x31.png"></a>
+    <a href="https://opensource.org/licenses/BSD-3-Clause"><img src="https://camo.githubusercontent.com/9b9ea65d95c9ef878afa1987df65731d47681336/68747470733a2f2f696d672e736869656c64732e696f2f707970692f6c2f736561626f726e2e737667"></a>
+    The contents of this repository are shared under under a <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+    Software elements are additionally licensed under the <a href="https://opensource.org/licenses/BSD-3-Clause">BSD (3-Clause) License</a>.
+    </div>
 #######################################################################################
 # Launch button settings
 launch_buttons:
